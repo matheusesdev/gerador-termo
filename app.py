@@ -1,18 +1,31 @@
 import io
-import locale # <-- 1. Importe o módulo locale
 from flask import Flask, render_template, request, send_file
 from docxtpl import DocxTemplate
 from datetime import datetime
 
-# --- Tenta configurar o locale para Português do Brasil ---
-# Isso é necessário para que o mês saia em português (ex: "Abril" em vez de "April")
-try:
-    locale.setlocale(locale.LC_TIME, 'pt_BR.UTF-8')
-except locale.Error:
-    try:
-        locale.setlocale(locale.LC_TIME, 'Portuguese_Brazil')
-    except locale.Error:
-        print("Locale pt_BR não encontrado, usando o padrão do sistema.")
+# --- DICIONÁRIO DE MESES EM PORTUGUÊS ---
+# Solução independente de locale para garantir meses em PT-BR
+MESES_PT = {
+    1: 'janeiro',
+    2: 'fevereiro',
+    3: 'março',
+    4: 'abril',
+    5: 'maio',
+    6: 'junho',
+    7: 'julho',
+    8: 'agosto',
+    9: 'setembro',
+    10: 'outubro',
+    11: 'novembro',
+    12: 'dezembro'
+}
+
+def formatar_data_ptbr(data_obj):
+    """Formata data para formato brasileiro: 'dd de mês de yyyy'"""
+    dia = data_obj.day
+    mes = MESES_PT[data_obj.month]
+    ano = data_obj.year
+    return f"{dia} de {mes} de {ano}"
 
 
 # --- FUNÇÕES AUXILIARES DE FORMATAÇÃO ---
@@ -68,10 +81,10 @@ def gerar_documento():
             'cpf_cnpj_corretor': request.form['cpf_cnpj_corretor'],
         }
 
-        # Formata a data de assinatura usando o locale PT-BR
+        # Formata a data de assinatura usando função personalizada PT-BR
         data_str = request.form['data_assinatura']
         data_obj = datetime.strptime(data_str, '%Y-%m-%d')
-        context['data_assinatura'] = data_obj.strftime('%d de %B de %Y')
+        context['data_assinatura'] = formatar_data_ptbr(data_obj)
         
         doc.render(context)
 
