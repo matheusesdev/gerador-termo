@@ -127,6 +127,23 @@
             border: none;
             padding: 0;
         }
+        
+        /* Destaque especial para o fieldset de seleção de empreendimento */
+        fieldset.empreendimento-fieldset {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            border: 2px solid var(--primary-color);
+        }
+        fieldset.empreendimento-fieldset legend {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+        
         legend {
             font-size: 1.4rem;
             font-weight: 600;
@@ -150,12 +167,27 @@
             border-radius: 6px;
             margin-bottom: 15px;
             transition: border-color 0.3s, box-shadow 0.3s;
+            background-color: white;
         }
         input:focus, select:focus {
             outline: none;
             border-color: var(--primary-color);
             box-shadow: 0 0 0 3px rgba(0, 86, 179, 0.2);
         }
+        
+        /* --- ESTILIZAÇÃO ESPECIAL PARA SELECT --- */
+        select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23343a40' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            padding-right: 40px;
+        }
+        select:hover {
+            border-color: var(--primary-color);
+        }
+        
         .grid-2-col {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -245,10 +277,11 @@
             
             <!-- Etapa 1: Dados do Comprador -->
             <div class="form-step active-step">
-                <fieldset>
-                    <legend>Seleção de Empreendimento</legend>
+                <fieldset class="empreendimento-fieldset">
+                    <legend>🏢 Seleção de Empreendimento</legend>
                     <label for="empreendimento">Escolha o Empreendimento:</label>
                     <select id="empreendimento" name="empreendimento" required>
+                        <option value="" disabled selected>Selecione um empreendimento...</option>
                         <option value="connect">Connect Tech II</option>
                         <option value="dona">Dona</option>
                     </select>
