@@ -53,7 +53,12 @@ def index():
 @app.route('/gerar-documento', methods=['POST'])
 def gerar_documento():
     try:
-        doc = DocxTemplate("modelo.docx")
+        # Seleciona o modelo baseado no empreendimento escolhido
+        empreendimento = request.form.get('empreendimento', 'connect')
+        if empreendimento == 'dona':
+            doc = DocxTemplate("modelo-dona.docx")
+        else:
+            doc = DocxTemplate("modelo.docx")
         
         logradouro = request.form['logradouro']
         numero = request.form['numero']
