@@ -53,7 +53,17 @@ def index():
 @app.route('/gerar-documento', methods=['POST'])
 def gerar_documento():
     try:
-        doc = DocxTemplate("modelo.docx")
+        # Seleciona o modelo correto baseado no empreendimento escolhido
+        empreendimento = request.form.get('empreendimento', 'connect-tech')
+        
+        if empreendimento == 'dona':
+            modelo_arquivo = "modelo-dona.docx"
+            nome_empreendimento = "DONA"
+        else:  # connect-tech (padrão)
+            modelo_arquivo = "modelo.docx"
+            nome_empreendimento = "CONNECT TECH II"
+        
+        doc = DocxTemplate(modelo_arquivo)
         
         logradouro = request.form['logradouro']
         numero = request.form['numero']
@@ -95,7 +105,10 @@ def gerar_documento():
         doc.save(file_stream)
         file_stream.seek(0)
 
-        nome_arquivo_saida = f"termo_de_reserva_{context['nome_cliente'].replace(' ', '_')}.docx"
+        # Nome do arquivo inclui o empreendimento
+        nome_cliente_limpo = context['nome_cliente'].replace(' ', '_')
+        empreendimento_limpo = nome_empreendimento.replace(' ', '_')
+        nome_arquivo_saida = f"termo_de_reserva_{empreendimento_limpo}_{nome_cliente_limpo}.docx"
         
         return send_file(
             file_stream,

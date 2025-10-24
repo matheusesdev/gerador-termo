@@ -41,5 +41,7 @@ instance/
 .DS_Store
 Thumbs.db
 
-# Documentos gerados
+# Documentos gerados e temporários do Word
 *.docx~
+~$*.docx
+~$*.doc

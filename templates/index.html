@@ -142,7 +142,7 @@
             margin-bottom: 5px;
             font-weight: 500;
         }
-        input {
+        input, select {
             width: 100%;
             padding: 12px;
             font-size: 1rem;
@@ -151,10 +151,14 @@
             margin-bottom: 15px;
             transition: border-color 0.3s, box-shadow 0.3s;
         }
-        input:focus {
+        input:focus, select:focus {
             outline: none;
             border-color: var(--primary-color);
             box-shadow: 0 0 0 3px rgba(0, 86, 179, 0.2);
+        }
+        select {
+            cursor: pointer;
+            background-color: white;
         }
         .grid-2-col {
             display: grid;
@@ -247,6 +251,15 @@
             <div class="form-step active-step">
                 <fieldset>
                     <legend>Dados do(a) Comprador(a)</legend>
+                    
+                    <!-- Seleção de Empreendimento -->
+                    <label for="empreendimento">Empreendimento:</label>
+                    <select id="empreendimento" name="empreendimento" required style="width: 100%; padding: 12px; font-size: 1rem; border: 1px solid var(--border-color); border-radius: 6px; margin-bottom: 20px; transition: border-color 0.3s, box-shadow 0.3s;">
+                        <option value="">Selecione o empreendimento</option>
+                        <option value="connect-tech">CONNECT TECH II</option>
+                        <option value="dona">DONA</option>
+                    </select>
+                    
                     <label for="nome_cliente">Nome Completo:</label>
                     <input type="text" id="nome_cliente" name="nome_cliente" required>
                     <div class="grid-2-col">
