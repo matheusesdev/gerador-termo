@@ -84,7 +84,10 @@ def gerar_documento():
         # Formata a data de assinatura usando função personalizada PT-BR
         data_str = request.form['data_assinatura']
         data_obj = datetime.strptime(data_str, '%Y-%m-%d')
-        context['data_assinatura'] = formatar_data_ptbr(data_obj)
+        data_formatada = formatar_data_ptbr(data_obj)
+        print(f"DEBUG - Data recebida: {data_str}")
+        print(f"DEBUG - Data formatada: {data_formatada}")
+        context['data_assinatura'] = data_formatada
         
         doc.render(context)
 
