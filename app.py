@@ -56,7 +56,7 @@ def gerar_documento():
         # Seleciona o modelo baseado no empreendimento escolhido
         empreendimento = request.form.get('empreendimento', 'connect')
         if empreendimento == 'dona':
-            doc = DocxTemplate("modelo-dona.docx")
+            doc = DocxTemplate("modelodona.docx")
         else:
             doc = DocxTemplate("modelo.docx")
         
