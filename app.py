@@ -92,4 +92,6 @@ def gerar_documento():
         return f"<h1>Ocorreu um erro:</h1><p>{e}</p><p>Verifique se todos os campos foram preenchidos corretamente.</p>"
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    import os
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port, debug=False)
