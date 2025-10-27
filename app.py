@@ -1,5 +1,7 @@
 import io
-from flask import Flask, render_template, request, send_file
+import os
+import uuid
+from flask import Flask, render_template, request, send_file, jsonify
 from docxtpl import DocxTemplate
 from datetime import datetime
 
@@ -45,6 +47,11 @@ def formatar_telefone(tel_str):
 
 # --- APLICAÇÃO FLASK ---
 app = Flask(__name__)
+
+# Criar pasta para documentos gerados temporariamente
+GENERATED_FOLDER = 'generated'
+if not os.path.exists(GENERATED_FOLDER):
+    os.makedirs(GENERATED_FOLDER)
 
 @app.route('/')
 def index():
@@ -96,11 +103,25 @@ def gerar_documento():
         
         doc.render(context)
 
+        # Gera nome único para o arquivo
+        nome_arquivo_saida = f"termo_de_reserva_{context['nome_cliente'].replace(' ', '_')}_{uuid.uuid4().hex[:8]}.docx"
+        caminho_arquivo = os.path.join(GENERATED_FOLDER, nome_arquivo_saida)
+        
+        # Salva o arquivo no disco
+        doc.save(caminho_arquivo)
+        
+        # Se a requisição for AJAX (via fetch), retorna JSON
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return jsonify({
+                'success': True,
+                'download_url': f'/download/{nome_arquivo_saida}',
+                'filename': nome_arquivo_saida
+            })
+        
+        # Senão, retorna o arquivo diretamente (comportamento antigo)
         file_stream = io.BytesIO()
         doc.save(file_stream)
         file_stream.seek(0)
-
-        nome_arquivo_saida = f"termo_de_reserva_{context['nome_cliente'].replace(' ', '_')}.docx"
         
         return send_file(
             file_stream,
@@ -110,7 +131,26 @@ def gerar_documento():
         )
 
     except Exception as e:
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return jsonify({
+                'success': False,
+                'error': str(e)
+            }), 400
         return f"<h1>Ocorreu um erro:</h1><p>{e}</p><p>Verifique se todos os campos foram preenchidos corretamente.</p>"
+
+@app.route('/download/<filename>')
+def download_file(filename):
+    """Rota para download do arquivo gerado"""
+    try:
+        caminho_arquivo = os.path.join(GENERATED_FOLDER, filename)
+        return send_file(
+            caminho_arquivo,
+            as_attachment=True,
+            download_name=filename,
+            mimetype='application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+        )
+    except Exception as e:
+        return f"<h1>Erro ao baixar arquivo:</h1><p>{e}</p>", 404
 
 if __name__ == '__main__':
     import os

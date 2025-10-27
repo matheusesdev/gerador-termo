@@ -390,8 +390,22 @@
         </form>
         
         <!-- Mensagem de Loading -->
-        <div id="loadingMessage">
+        <div id="loadingMessage" style="display: none;">
             <p>Gerando seu documento... Por favor, aguarde.</p>
+        </div>
+        
+        <!-- Mensagem de Sucesso com Download -->
+        <div id="successMessage" style="display: none; text-align: center;">
+            <h2 style="color: var(--success-color); margin-bottom: 20px;">✅ Documento Gerado com Sucesso!</h2>
+            <p style="margin-bottom: 30px;">Seu termo de reserva está pronto para download.</p>
+            <div style="margin-bottom: 30px;">
+                <a id="downloadLink" href="#" class="btn btn-primary" style="text-decoration: none; display: inline-block;">
+                    📥 Baixar Documento
+                </a>
+            </div>
+            <button type="button" id="newTermBtn" class="btn btn-secondary" onclick="gerarNovoTermo()">
+                🔄 Gerar Novo Termo
+            </button>
         </div>
     </div>
 
@@ -419,14 +433,71 @@
             
             currentStep += n;
             if (currentStep >= formSteps.length) {
-                // Chegou ao final, submete o formulário
-                form.style.display = "none";
-                document.querySelector(".progress-bar").style.display = "none";
-                document.getElementById("loadingMessage").style.display = "block";
-                form.submit();
+                // Chegou ao final, submete o formulário via AJAX
+                submitFormAjax();
                 return false;
             }
             showStep(currentStep);
+        }
+        
+        function submitFormAjax() {
+            // Esconde formulário e mostra loading
+            form.style.display = "none";
+            document.querySelector(".progress-bar").style.display = "none";
+            document.getElementById("loadingMessage").style.display = "block";
+            
+            // Prepara dados do formulário
+            const formData = new FormData(form);
+            
+            // Envia requisição AJAX
+            fetch('/gerar-documento', {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Esconde loading
+                document.getElementById("loadingMessage").style.display = "none";
+                
+                if (data.success) {
+                    // Mostra tela de sucesso
+                    const downloadLink = document.getElementById("downloadLink");
+                    downloadLink.href = data.download_url;
+                    downloadLink.download = data.filename;
+                    document.getElementById("successMessage").style.display = "block";
+                } else {
+                    alert('Erro ao gerar documento: ' + data.error);
+                    // Volta para o formulário
+                    form.style.display = "block";
+                    document.querySelector(".progress-bar").style.display = "flex";
+                }
+            })
+            .catch(error => {
+                document.getElementById("loadingMessage").style.display = "none";
+                alert('Erro ao gerar documento: ' + error);
+                // Volta para o formulário
+                form.style.display = "block";
+                document.querySelector(".progress-bar").style.display = "flex";
+            });
+        }
+        
+        function gerarNovoTermo() {
+            // Reset completo do formulário
+            form.reset();
+            currentStep = 0;
+            
+            // Esconde mensagem de sucesso
+            document.getElementById("successMessage").style.display = "none";
+            
+            // Mostra formulário e barra de progresso
+            form.style.display = "block";
+            document.querySelector(".progress-bar").style.display = "flex";
+            
+            // Volta para a primeira etapa
+            showStep(0);
         }
 
         function validateForm() {
