@@ -3,6 +3,9 @@ import os
 import uuid
 from flask import Flask, render_template, request, send_file, jsonify
 from docxtpl import DocxTemplate
+from docx import Document
+from docx.oxml.ns import qn
+from docx.oxml import OxmlElement
 from datetime import datetime
 
 # --- DICIONÁRIO DE MESES EM PORTUGUÊS ---
@@ -44,6 +47,39 @@ def formatar_telefone(tel_str):
     if len(tel_limpo) == 11:
         return f"({tel_limpo[:2]}) {tel_limpo[2:7]}-{tel_limpo[7:]}"
     return tel_str
+
+def proteger_documento(caminho_arquivo):
+    """
+    Adiciona proteção ao documento Word para evitar edições.
+    O documento fica somente leitura, mas pode ser impresso e copiado.
+    """
+    try:
+        # Abre o documento com python-docx
+        doc = Document(caminho_arquivo)
+        
+        # Acessa as configurações do documento
+        settings = doc.settings
+        element = settings.element
+        
+        # Cria elemento de proteção
+        doc_protection = OxmlElement('w:documentProtection')
+        doc_protection.set(qn('w:edit'), 'readOnly')
+        doc_protection.set(qn('w:enforcement'), '1')
+        
+        # Remove proteção anterior se existir
+        for child in list(element):
+            if child.tag == qn('w:documentProtection'):
+                element.remove(child)
+        
+        # Adiciona nova proteção
+        element.append(doc_protection)
+        
+        # Salva o documento protegido
+        doc.save(caminho_arquivo)
+        return True
+    except Exception as e:
+        print(f"Erro ao proteger documento: {e}")
+        return False
 
 # --- APLICAÇÃO FLASK ---
 app = Flask(__name__)
@@ -109,6 +145,9 @@ def gerar_documento():
         
         # Salva o arquivo no disco
         doc.save(caminho_arquivo)
+        
+        # Protege o documento contra edições
+        proteger_documento(caminho_arquivo)
         
         # Se a requisição for AJAX (via fetch), retorna JSON
         if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
