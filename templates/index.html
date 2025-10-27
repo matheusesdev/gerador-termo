@@ -562,6 +562,7 @@
         
         function preencherEndereco(dados) {
             if (!dados.erro) {
+                // Preenche os campos com os dados da API
                 logradouroInput.value = dados.logradouro || '';
                 bairroInput.value = dados.bairro || '';
                 cidadeInput.value = dados.localidade || '';
@@ -571,7 +572,7 @@
                 document.getElementById('numero').focus();
             } else {
                 limparCamposEndereco();
-                alert('CEP não encontrado. Por favor, verifique e tente novamente.');
+                alert('CEP não encontrado na base de dados dos Correios. Verifique se digitou corretamente e tente novamente.');
             }
         }
         
