@@ -85,7 +85,8 @@ def proteger_documento(caminho_arquivo):
 app = Flask(__name__)
 
 # Criar pasta para documentos gerados temporariamente
-GENERATED_FOLDER = 'generated'
+# No Vercel, usar /tmp para arquivos temporários
+GENERATED_FOLDER = '/tmp/generated' if os.environ.get('VERCEL') else 'generated'
 if not os.path.exists(GENERATED_FOLDER):
     os.makedirs(GENERATED_FOLDER)
 
@@ -195,6 +196,3 @@ if __name__ == '__main__':
     import os
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port, debug=False)
-
-# Para o Vercel
-handler = app

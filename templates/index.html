@@ -186,6 +186,45 @@
         }
         select:hover {
             border-color: var(--primary-color);
+            box-shadow: 0 2px 8px rgba(0, 86, 179, 0.1);
+            transform: translateY(-1px);
+        }
+        
+        /* --- ESTILIZAÇÃO ESPECIAL PARA O SELECT DE EMPREENDIMENTO --- */
+        #empreendimento {
+            font-size: 1.05rem;
+            font-weight: 500;
+            border: 2px solid var(--primary-color);
+            padding: 15px;
+            padding-right: 45px;
+            background-color: #f8f9ff;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%230056b3' d='M8 12L2 6h12z'/%3E%3C/svg%3E");
+            background-position: right 12px center;
+            transition: all 0.3s ease;
+        }
+        
+        #empreendimento:hover {
+            background-color: white;
+            border-color: var(--success-color);
+            box-shadow: 0 4px 12px rgba(0, 86, 179, 0.15);
+            transform: translateY(-2px);
+        }
+        
+        #empreendimento:focus {
+            background-color: white;
+            border-color: var(--success-color);
+            box-shadow: 0 0 0 4px rgba(40, 167, 69, 0.2);
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%2328a745' d='M8 12L2 6h12z'/%3E%3C/svg%3E");
+        }
+        
+        #empreendimento option {
+            padding: 12px;
+            font-size: 1rem;
+            background-color: white;
+        }
+        
+        #empreendimento option:hover {
+            background-color: #e3f2fd;
         }
         
         .grid-2-col {
@@ -282,8 +321,8 @@
                     <label for="empreendimento">Escolha o Empreendimento:</label>
                     <select id="empreendimento" name="empreendimento" required>
                         <option value="" disabled selected>Selecione um empreendimento...</option>
-                        <option value="connect">Connect Tech II</option>
-                        <option value="dona">Dona</option>
+                        <option value="connect">🏢 TECH II</option>
+                        <option value="dona">🏘️ DONA</option>
                     </select>
                 </fieldset>
 
