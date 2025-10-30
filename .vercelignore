@@ -1,0 +1,15 @@
+# Arquivos a ignorar no deploy do Vercel
+__pycache__
+*.pyc
+.git
+.gitignore
+README.md
+DEPLOY_GUIDE.md
+DEPLOY_RENDER.md
+.vscode
+.idea
+generated/
+venv/
+env/
+.env
+*.md
